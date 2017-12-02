@@ -34,6 +34,7 @@ namespace 音频文件整理工具
             refreshHandeler += RefreshView;
             fileCollection.OnLoadFileFinish += FileCollection_OnLoadFileFinish;
             fileCollection.OnLoadFile += FileCollection_OnLoadFile;
+            comboBox1.SelectedIndex = 0;
         }
 
         private void FileCollection_OnLoadFile(object sender, LoadFileEventArgs e)
@@ -73,7 +74,7 @@ namespace 音频文件整理工具
                     authorsNodeDic[musicinfo.Authors].Add(new TreeNode()
                     {
                         Name = musicinfo.SongName,
-                        Text = musicinfo.SongName,
+                        Text = musicinfo.SongName + " - " + musicinfo.Album,
                         ImageKey = musicinfo.ThisFileInfo.Extension,
                         SelectedImageKey = musicinfo.ThisFileInfo.Extension,
                         StateImageKey = musicinfo.ThisFileInfo.Extension,
@@ -85,7 +86,7 @@ namespace 音频文件整理工具
                     authorsNodeDic[musicinfo.Authors] = new List<TreeNode>(){new TreeNode()
                     {
                         Name = musicinfo.SongName,
-                        Text = musicinfo.SongName,
+                        Text = musicinfo.SongName + " - " + musicinfo.Album,
                         ImageKey = musicinfo.ThisFileInfo.Extension,
                         SelectedImageKey = musicinfo.ThisFileInfo.Extension,
                         StateImageKey = musicinfo.ThisFileInfo.Extension,
@@ -128,8 +129,9 @@ namespace 音频文件整理工具
                         StateImageKey = "album",
                         ImageKey = "album",
                     };
-                    albumNode.Nodes.AddRange(albumKvp.Value.ToArray());
-                    tn.Nodes.Add(albumNode);
+                    // albumNode.Nodes.AddRange(albumKvp.Value.ToArray());
+                    // tn.Nodes.Add(albumNode);
+                    tn.Nodes.AddRange(albumKvp.Value.ToArray());
                 }
                 this.treeView1.Nodes.Add(tn);
             }
@@ -198,7 +200,7 @@ namespace 音频文件整理工具
                 {
                     lines.Add(string.Format("{0},{1},{2},{3},{4}", item.SongName, item.Authors, item.Album, item.Time, item.ThisFileInfo.FullName));
                 }
-                System.IO.File.WriteAllLines(sfd.FileName, lines,Encoding.UTF8);
+                System.IO.File.WriteAllLines(sfd.FileName, lines, Encoding.UTF8);
             }
         }
 
@@ -226,6 +228,80 @@ namespace 音频文件整理工具
                 {
                     fileCollection.StartLoadFolder(dirs.GetValue(0).ToString(), true);
                 }
+            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            this.dataGridView1.Rows.Clear();
+            foreach (var mf in this.fileCollection.MusicFiles)
+            {
+                if (comboBox1.SelectedItem.ToString() == "歌曲名称")
+                {
+                    if (!mf.SongName.Contains(textBox1.Text))
+                    {
+                        continue;
+                    }
+                }
+                else if (comboBox1.SelectedItem.ToString() == "歌手")
+                {
+                    if (!mf.Authors.Contains(textBox1.Text))
+                    {
+                        continue;
+                    }
+                }
+                else if (comboBox1.SelectedItem.ToString() == "专辑")
+                {
+                    if (!mf.Album.Contains(textBox1.Text))
+                    {
+                        continue;
+                    }
+                }
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(this.dataGridView1);
+                row.Cells[0].Value = mf.SongName;
+                row.Cells[1].Value = mf.Authors;
+                row.Cells[2].Value = mf.Album;
+                row.Cells[3].Value = mf.Time;
+                row.Cells[4].Value = mf.ThisFileInfo.FullName;
+                row.Tag = mf;
+                this.dataGridView1.Rows.Add(row);
+
+            }
+
+            Cursor = Cursors.Default;
+        }
+
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && this.dataGridView1.Rows[e.RowIndex].Tag is MusicFileInfo)
+            {
+                var mf = this.dataGridView1.Rows[e.RowIndex].Tag as MusicFileInfo;
+                ContextMenuStrip cms = new ContextMenuStrip();
+                cms.Items.Add("播放", null, (object o, EventArgs ee) =>
+                {
+                    Process.Start(mf.ThisFileInfo.FullName);
+                });
+                cms.Items.Add("在文件浏览器中查看", null, (object o, EventArgs ee) =>
+                {
+                    Process proc = new Process();
+                    proc.StartInfo.FileName = "explorer";
+                    //打开资源管理器
+                    proc.StartInfo.Arguments = @"/select," + mf.ThisFileInfo.FullName;
+                    //选中"notepad.exe"这个程序,即记事本
+                    proc.Start();
+                });
+                cms.Items.Add("复制", null, (object o, EventArgs ee) =>
+                {
+                    Clipboard.SetFileDropList(new System.Collections.Specialized.StringCollection() { mf.ThisFileInfo.FullName });
+                });
+                cms.Show(System.Windows.Forms.Control.MousePosition);
             }
         }
     }
