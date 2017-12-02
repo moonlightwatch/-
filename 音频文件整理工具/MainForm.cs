@@ -198,7 +198,7 @@ namespace 音频文件整理工具
                 {
                     lines.Add(string.Format("{0},{1},{2},{3},{4}", item.SongName, item.Authors, item.Album, item.Time, item.ThisFileInfo.FullName));
                 }
-                System.IO.File.WriteAllLines(sfd.FileName, lines);
+                System.IO.File.WriteAllLines(sfd.FileName, lines,Encoding.UTF8);
             }
         }
 
