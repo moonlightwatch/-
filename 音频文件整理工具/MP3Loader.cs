@@ -52,7 +52,14 @@ namespace 音频文件整理工具
                     }
                 }
             }
-
+            if (string.IsNullOrEmpty(mp3Info.Album))
+            {
+                mp3Info.Album = "未知";
+            }
+            if (string.IsNullOrEmpty(mp3Info.Performer))
+            {
+                mp3Info.Performer = "未知";
+            }
             return mp3Info;
         }
         /// <summary>

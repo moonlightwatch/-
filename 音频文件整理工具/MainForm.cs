@@ -13,6 +13,8 @@ namespace 音频文件整理工具
 
     public partial class MainForm : Form
     {
+        private MP3FileTool tool = new MP3FileTool();
+
         public MainForm()
         {
             InitializeComponent();
@@ -20,7 +22,7 @@ namespace 音频文件整理工具
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            tool.LoadFromFolder(@"C:\Users\Administrator\Music");
         }
 
         private void 关于AToolStripMenuItem_Click(object sender, EventArgs e)
