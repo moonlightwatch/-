@@ -25,6 +25,7 @@ namespace 音频文件整理工具
             var bytes = File.ReadAllBytes(filepath);
             MP3FileInfo mp3Info = new MP3FileInfo();
             mp3Info.FileName = Path.GetFileName(filepath);
+            mp3Info.FilePath = Path.GetFullPath(filepath);
             mp3Info.HaveID3 = checkID3(bytes);
             mp3Info.MD5 = makeMD5(bytes);
             if (mp3Info.HaveID3)

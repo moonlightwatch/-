@@ -61,15 +61,26 @@ namespace 音频文件整理工具
             return fileInfos.ToArray();
         }
 
-        internal void RenameAllFile(RenameFormat format)
+        internal MP3FileInfo[] RenameAllFile(MP3FileInfo[] files, RenameFormat format)
         {
-            foreach (var item in fileInfos)
+            foreach (var item in files)
             {
                 item.FileName = item.FormatFileName(format);
             }
+            return files;
         }
 
-        internal List<MP3FolderInfo> FolderByAlbum()
+        internal MP3FileInfo[] GetFileByAlbum(string album)
+        {
+            return fileInfos.FindAll(f => f.Album == album).ToArray();
+        }
+
+        internal MP3FileInfo[] GetFileByPerformer(string performer)
+        {
+            return fileInfos.FindAll(f => f.Performer == performer).ToArray();
+        }
+
+        internal MP3FolderInfo[] FolderByAlbum()
         {
             List<MP3FolderInfo> result = new List<MP3FolderInfo>();
             foreach (var item in fileInfos)
@@ -87,10 +98,10 @@ namespace 音频文件整理工具
                     tmp.FileInfos.Add(item);
                 }
             }
-            return result;
+            return result.ToArray();
         }
 
-        internal List<MP3FolderInfo> FolderByPerformer()
+        internal MP3FolderInfo[] FolderByPerformer()
         {
             List<MP3FolderInfo> result = new List<MP3FolderInfo>();
             foreach (var item in fileInfos)
@@ -108,7 +119,58 @@ namespace 音频文件整理工具
                     tmp.FileInfos.Add(item);
                 }
             }
-            return result;
+            return result.ToArray();
+        }
+
+        internal bool SaveToFolder(string targetPath, MP3FileInfo[] files)
+        {
+            if (!Directory.Exists(targetPath))
+            {
+                return false;
+            }
+
+            foreach (var item in files)
+            {
+                try
+                {
+                    File.Copy(item.FilePath, Path.Combine(targetPath, item.FileName), true);
+                }
+                catch (Exception exc)
+                {
+                    System.Windows.Forms.MessageBox.Show(exc.Message, "保存出错");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        internal bool SaveToFolder(string targetPath, MP3FolderInfo[] folders)
+        {
+            if (!Directory.Exists(targetPath))
+            {
+                return false;
+            }
+            foreach (var folder in folders)
+            {
+                var files = folder.FileInfos;
+                if (files.Count > 0)
+                {
+                    Directory.CreateDirectory(Path.Combine(targetPath, folder.Name));
+                }
+                foreach (var item in files)
+                {
+                    try
+                    {
+                        File.Copy(item.FilePath, Path.Combine(targetPath, folder.Name, item.FileName), true);
+                    }
+                    catch (Exception exc)
+                    {
+                        System.Windows.Forms.MessageBox.Show(exc.Message, "保存出错");
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 

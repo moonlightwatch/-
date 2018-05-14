@@ -17,6 +17,10 @@ namespace 音频文件整理工具
         /// </summary>
         public string FileName { get; set; }
         /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string FilePath { get; set; }
+        /// <summary>
         /// MD5
         /// </summary>
         public string MD5 { get; set; }
