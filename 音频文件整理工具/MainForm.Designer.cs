@@ -38,17 +38,21 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.退出XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.工具TToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.按歌手分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.按专辑分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助HToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.按歌手分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.按专辑分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.曲名歌手ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.歌手曲名ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.曲名ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -128,11 +132,26 @@
             // 工具TToolStripMenuItem
             // 
             this.工具TToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.按专辑分类ToolStripMenuItem,
             this.按歌手分类ToolStripMenuItem,
-            this.按专辑分类ToolStripMenuItem});
+            this.分类ToolStripMenuItem});
             this.工具TToolStripMenuItem.Name = "工具TToolStripMenuItem";
             this.工具TToolStripMenuItem.Size = new System.Drawing.Size(59, 21);
             this.工具TToolStripMenuItem.Text = "工具(&T)";
+            // 
+            // 按歌手分类ToolStripMenuItem
+            // 
+            this.按歌手分类ToolStripMenuItem.Name = "按歌手分类ToolStripMenuItem";
+            this.按歌手分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.按歌手分类ToolStripMenuItem.Text = "按歌手分类";
+            this.按歌手分类ToolStripMenuItem.Click += new System.EventHandler(this.按歌手分类ToolStripMenuItem_Click);
+            // 
+            // 按专辑分类ToolStripMenuItem
+            // 
+            this.按专辑分类ToolStripMenuItem.Name = "按专辑分类ToolStripMenuItem";
+            this.按专辑分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.按专辑分类ToolStripMenuItem.Text = "按专辑分类";
+            this.按专辑分类ToolStripMenuItem.Click += new System.EventHandler(this.按专辑分类ToolStripMenuItem_Click);
             // 
             // 帮助HToolStripMenuItem
             // 
@@ -145,7 +164,7 @@
             // 关于AToolStripMenuItem
             // 
             this.关于AToolStripMenuItem.Name = "关于AToolStripMenuItem";
-            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.关于AToolStripMenuItem.Text = "关于(&A)...";
             this.关于AToolStripMenuItem.Click += new System.EventHandler(this.关于AToolStripMenuItem_Click);
             // 
@@ -200,6 +219,14 @@
             this.label1.Text = "文件预览";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(4, 30);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(220, 360);
+            this.treeView1.TabIndex = 1;
+            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
@@ -225,27 +252,33 @@
             this.label2.Text = "文件属性";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // 按歌手分类ToolStripMenuItem
+            // 分类ToolStripMenuItem
             // 
-            this.按歌手分类ToolStripMenuItem.Name = "按歌手分类ToolStripMenuItem";
-            this.按歌手分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.按歌手分类ToolStripMenuItem.Text = "按歌手分类";
-            this.按歌手分类ToolStripMenuItem.Click += new System.EventHandler(this.按歌手分类ToolStripMenuItem_Click);
+            this.分类ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.曲名ToolStripMenuItem,
+            this.曲名歌手ToolStripMenuItem,
+            this.歌手曲名ToolStripMenuItem});
+            this.分类ToolStripMenuItem.Name = "分类ToolStripMenuItem";
+            this.分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.分类ToolStripMenuItem.Text = "重命名";
             // 
-            // 按专辑分类ToolStripMenuItem
+            // 曲名歌手ToolStripMenuItem
             // 
-            this.按专辑分类ToolStripMenuItem.Name = "按专辑分类ToolStripMenuItem";
-            this.按专辑分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.按专辑分类ToolStripMenuItem.Text = "按专辑分类";
-            this.按专辑分类ToolStripMenuItem.Click += new System.EventHandler(this.按专辑分类ToolStripMenuItem_Click);
+            this.曲名歌手ToolStripMenuItem.Name = "曲名歌手ToolStripMenuItem";
+            this.曲名歌手ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.曲名歌手ToolStripMenuItem.Text = "曲名-歌手";
             // 
-            // treeView1
+            // 歌手曲名ToolStripMenuItem
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(4, 30);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(220, 360);
-            this.treeView1.TabIndex = 1;
+            this.歌手曲名ToolStripMenuItem.Name = "歌手曲名ToolStripMenuItem";
+            this.歌手曲名ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.歌手曲名ToolStripMenuItem.Text = "歌手-曲名";
+            // 
+            // 曲名ToolStripMenuItem
+            // 
+            this.曲名ToolStripMenuItem.Name = "曲名ToolStripMenuItem";
+            this.曲名ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.曲名ToolStripMenuItem.Text = "曲名";
             // 
             // MainForm
             // 
@@ -298,6 +331,10 @@
         private System.Windows.Forms.ToolStripMenuItem 按歌手分类ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 按专辑分类ToolStripMenuItem;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ToolStripMenuItem 分类ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 曲名ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 曲名歌手ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 歌手曲名ToolStripMenuItem;
     }
 }
 
