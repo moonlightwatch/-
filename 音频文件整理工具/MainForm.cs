@@ -103,19 +103,88 @@ namespace 音频文件整理工具
                 tool.LoadFromFolder(folderBrowser.SelectedPath, true);
                 ShowDataToView(tool.GetAllFileInfos());
             }
-
         }
 
-        private void 按歌手分类ToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void 曲名ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var folders = tool.FolderByPerformer();
-            ShowDataToView(folders);
+            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Title);
+            switch (label_view.Text)
+            {
+                case "文件预览":
+                    var files = tool.GetAllFileInfos();
+                    ShowDataToView(files);
+                    break;
+                case "文件预览（按歌手）":
+                    var folders1 = tool.FolderByPerformer();
+                    ShowDataToView(folders1);
+                    break;
+                case "文件预览（按专辑）":
+                    var folders2 = tool.FolderByAlbum();
+                    ShowDataToView(folders2);
+                    break;
+            }
         }
 
-        private void 按专辑分类ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 曲名歌手ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Title_Performer);
+            switch (label_view.Text)
+            {
+                case "文件预览":
+                    var files = tool.GetAllFileInfos();
+                    ShowDataToView(files);
+                    break;
+                case "文件预览（按歌手）":
+                    var folders1 = tool.FolderByPerformer();
+                    ShowDataToView(folders1);
+                    break;
+                case "文件预览（按专辑）":
+                    var folders2 = tool.FolderByAlbum();
+                    ShowDataToView(folders2);
+                    break;
+            }
+        }
+
+        private void 歌手曲名ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Performer_Title);
+            switch (label_view.Text)
+            {
+                case "文件预览":
+                    var files = tool.GetAllFileInfos();
+                    ShowDataToView(files);
+                    break;
+                case "文件预览（按歌手）":
+                    var folders1 = tool.FolderByPerformer();
+                    ShowDataToView(folders1);
+                    break;
+                case "文件预览（按专辑）":
+                    var folders2 = tool.FolderByAlbum();
+                    ShowDataToView(folders2);
+                    break;
+            }
+        }
+
+        private void 平铺ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var files = tool.GetAllFileInfos();
+            ShowDataToView(files);
+            label_view.Text = "文件预览";
+        }
+
+        private void 按专辑ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var folders = tool.FolderByAlbum();
             ShowDataToView(folders);
+            label_view.Text = "文件预览（按专辑）";
+        }
+
+        private void 按歌手ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var folders = tool.FolderByPerformer();
+            ShowDataToView(folders);
+            label_view.Text = "文件预览（按歌手）";
         }
     }
 }
