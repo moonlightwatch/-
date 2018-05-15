@@ -17,7 +17,6 @@ namespace 音频文件整理工具
 
         internal void LoadFromFolder(string path, bool reopen)
         {
-
             if (!Directory.Exists(path))
             {
                 return;

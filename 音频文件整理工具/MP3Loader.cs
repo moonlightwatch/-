@@ -27,7 +27,6 @@ namespace 音频文件整理工具
             mp3Info.FileName = Path.GetFileName(filepath);
             mp3Info.FilePath = Path.GetFullPath(filepath);
             mp3Info.HaveID3 = checkID3(bytes);
-            mp3Info.MD5 = makeMD5(bytes);
             if (mp3Info.HaveID3)
             {
                 var tags = readFrames(bytes);
@@ -148,17 +147,7 @@ namespace 音频文件整理工具
                 return null;
             }
         }
-        /// <summary>
-        /// 计算MD5
-        /// </summary>
-        /// <param name="bytes">内容</param>
-        /// <returns>内容的MD5</returns>
-        private string makeMD5(byte[] bytes)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] output = md5.ComputeHash(bytes);
-            return BitConverter.ToString(output).Replace("-", "").ToUpper();
-        }
+
         /// <summary>
         /// 获取文本帧的编码
         /// </summary>

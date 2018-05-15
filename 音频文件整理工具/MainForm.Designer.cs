@@ -38,12 +38,24 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.退出XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.工具TToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.自定义CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.选项OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助HToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.按歌手分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.按专辑分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -79,6 +91,7 @@
             this.打开OToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.打开OToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.打开OToolStripMenuItem.Text = "打开(&O)";
+            this.打开OToolStripMenuItem.Click += new System.EventHandler(this.打开OToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
@@ -115,23 +128,11 @@
             // 工具TToolStripMenuItem
             // 
             this.工具TToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.自定义CToolStripMenuItem,
-            this.选项OToolStripMenuItem});
+            this.按歌手分类ToolStripMenuItem,
+            this.按专辑分类ToolStripMenuItem});
             this.工具TToolStripMenuItem.Name = "工具TToolStripMenuItem";
             this.工具TToolStripMenuItem.Size = new System.Drawing.Size(59, 21);
             this.工具TToolStripMenuItem.Text = "工具(&T)";
-            // 
-            // 自定义CToolStripMenuItem
-            // 
-            this.自定义CToolStripMenuItem.Name = "自定义CToolStripMenuItem";
-            this.自定义CToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.自定义CToolStripMenuItem.Text = "自定义(&C)";
-            // 
-            // 选项OToolStripMenuItem
-            // 
-            this.选项OToolStripMenuItem.Name = "选项OToolStripMenuItem";
-            this.选项OToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.选项OToolStripMenuItem.Text = "选项(&O)";
             // 
             // 帮助HToolStripMenuItem
             // 
@@ -144,7 +145,7 @@
             // 关于AToolStripMenuItem
             // 
             this.关于AToolStripMenuItem.Name = "关于AToolStripMenuItem";
-            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.关于AToolStripMenuItem.Text = "关于(&A)...";
             this.关于AToolStripMenuItem.Click += new System.EventHandler(this.关于AToolStripMenuItem_Click);
             // 
@@ -156,12 +157,103 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tableLayoutPanel1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel2);
+            this.splitContainer1.Size = new System.Drawing.Size(685, 394);
+            this.splitContainer1.SplitterDistance = 228;
+            this.splitContainer1.TabIndex = 2;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.treeView1, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(228, 394);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Location = new System.Drawing.Point(4, 1);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(220, 25);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "文件预览";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(453, 394);
+            this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Location = new System.Drawing.Point(4, 1);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(445, 25);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "文件属性";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // 按歌手分类ToolStripMenuItem
+            // 
+            this.按歌手分类ToolStripMenuItem.Name = "按歌手分类ToolStripMenuItem";
+            this.按歌手分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.按歌手分类ToolStripMenuItem.Text = "按歌手分类";
+            this.按歌手分类ToolStripMenuItem.Click += new System.EventHandler(this.按歌手分类ToolStripMenuItem_Click);
+            // 
+            // 按专辑分类ToolStripMenuItem
+            // 
+            this.按专辑分类ToolStripMenuItem.Name = "按专辑分类ToolStripMenuItem";
+            this.按专辑分类ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.按专辑分类ToolStripMenuItem.Text = "按专辑分类";
+            this.按专辑分类ToolStripMenuItem.Click += new System.EventHandler(this.按专辑分类ToolStripMenuItem_Click);
+            // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(4, 30);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(220, 360);
+            this.treeView1.TabIndex = 1;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(685, 441);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -173,6 +265,12 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -189,11 +287,17 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem 退出XToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 工具TToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 自定义CToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 选项OToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 帮助HToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关于AToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripMenuItem 按歌手分类ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 按专辑分类ToolStripMenuItem;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 
