@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -58,6 +59,29 @@ namespace 音频文件整理工具
                     return this.Title;
             }
             return Title;
+        }
+
+        public string DetailsString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(string.Format("曲名：{0}", this.Title));
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("歌手：{0}", this.Performer));
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("专辑：{0}", this.Album));
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("年代：{0}", this.Year));
+            sb.Append(Environment.NewLine);
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("文件名：{0}", this.FileName));
+            sb.Append(Environment.NewLine);
+            var fs = File.Open(this.FilePath, FileMode.Open, FileAccess.Read);
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("文件尺寸：{0:N2} M", (fs.Length / 1024.0) / 1024.0));
+            fs.Close();
+            sb.Append(Environment.NewLine);
+            sb.Append(string.Format("文件路径：{0}", this.FilePath));
+            return sb.ToString();
         }
     }
 

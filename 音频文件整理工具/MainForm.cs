@@ -16,6 +16,8 @@ namespace 音频文件整理工具
     {
         private MP3FileTool tool = new MP3FileTool();
 
+        private MP3FileInfo[] showingData = new MP3FileInfo[] { };
+
         public MainForm()
         {
             InitializeComponent();
@@ -79,6 +81,8 @@ namespace 音频文件整理工具
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.comboBox_searchType.SelectedIndex = 0;
+
         }
 
         private void 关于AToolStripMenuItem_Click(object sender, EventArgs e)
@@ -101,26 +105,26 @@ namespace 音频文件整理工具
             if (folderBrowser.ShowDialog() == DialogResult.OK)
             {
                 tool.LoadFromFolder(folderBrowser.SelectedPath, true);
-                ShowDataToView(tool.GetAllFileInfos());
+                showingData = tool.GetAllFileInfos();
+                ShowDataToView(showingData);
             }
         }
 
 
         private void 曲名ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Title);
+            var files = tool.RenameAllFile(showingData, RenameFormat.Title);
             switch (label_view.Text)
             {
                 case "文件预览":
-                    var files = tool.GetAllFileInfos();
                     ShowDataToView(files);
                     break;
                 case "文件预览（按歌手）":
-                    var folders1 = tool.FolderByPerformer();
+                    var folders1 = tool.FolderByPerformer(showingData);
                     ShowDataToView(folders1);
                     break;
                 case "文件预览（按专辑）":
-                    var folders2 = tool.FolderByAlbum();
+                    var folders2 = tool.FolderByAlbum(showingData);
                     ShowDataToView(folders2);
                     break;
             }
@@ -128,19 +132,18 @@ namespace 音频文件整理工具
 
         private void 曲名歌手ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Title_Performer);
+            var files = tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Title_Performer);
             switch (label_view.Text)
             {
                 case "文件预览":
-                    var files = tool.GetAllFileInfos();
                     ShowDataToView(files);
                     break;
                 case "文件预览（按歌手）":
-                    var folders1 = tool.FolderByPerformer();
+                    var folders1 = tool.FolderByPerformer(showingData);
                     ShowDataToView(folders1);
                     break;
                 case "文件预览（按专辑）":
-                    var folders2 = tool.FolderByAlbum();
+                    var folders2 = tool.FolderByAlbum(showingData);
                     ShowDataToView(folders2);
                     break;
             }
@@ -148,19 +151,18 @@ namespace 音频文件整理工具
 
         private void 歌手曲名ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Performer_Title);
+            var files = tool.RenameAllFile(tool.GetAllFileInfos(), RenameFormat.Performer_Title);
             switch (label_view.Text)
             {
                 case "文件预览":
-                    var files = tool.GetAllFileInfos();
                     ShowDataToView(files);
                     break;
                 case "文件预览（按歌手）":
-                    var folders1 = tool.FolderByPerformer();
+                    var folders1 = tool.FolderByPerformer(showingData);
                     ShowDataToView(folders1);
                     break;
                 case "文件预览（按专辑）":
-                    var folders2 = tool.FolderByAlbum();
+                    var folders2 = tool.FolderByAlbum(showingData);
                     ShowDataToView(folders2);
                     break;
             }
@@ -168,23 +170,76 @@ namespace 音频文件整理工具
 
         private void 平铺ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var files = tool.GetAllFileInfos();
-            ShowDataToView(files);
+            ShowDataToView(showingData);
             label_view.Text = "文件预览";
         }
 
         private void 按专辑ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var folders = tool.FolderByAlbum();
+            var folders = tool.FolderByAlbum(showingData);
             ShowDataToView(folders);
             label_view.Text = "文件预览（按专辑）";
         }
 
         private void 按歌手ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var folders = tool.FolderByPerformer();
+            var folders = tool.FolderByPerformer(showingData);
             ShowDataToView(folders);
             label_view.Text = "文件预览（按歌手）";
+        }
+
+        private void textBox_searchbox_TextChanged(object sender, EventArgs e)
+        {
+            RunSearch();
+        }
+
+        private void comboBox_searchType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RunSearch();
+        }
+
+        private void RunSearch()
+        {
+            var files = tool.GetAllFileInfos();
+            var text = textBox_searchbox.Text;
+            if (comboBox_searchType.SelectedItem.ToString() == "搜曲名")
+            {
+                showingData = files.Where(f => f.Title.Contains(text)).ToArray();
+            }
+            if (comboBox_searchType.SelectedItem.ToString() == "搜歌手")
+            {
+                showingData = files.Where(f => f.Performer.Contains(text)).ToArray();
+            }
+            if (comboBox_searchType.SelectedItem.ToString() == "搜专辑")
+            {
+                showingData = files.Where(f => f.Album.Contains(text)).ToArray();
+            }
+            ShowDataToView(showingData);
+            label_view.Text = "文件预览";
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Tag is MP3FileInfo)
+            {
+                pictureBox1.Image = (e.Node.Tag as MP3FileInfo).Picture;
+                textBox_info.Text = (e.Node.Tag as MP3FileInfo).DetailsString();
+            }
+            else
+            {
+                pictureBox1.Image = null;
+                textBox_info.Text = "";
+            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            treeView1.SelectedNode = treeView1.GetNodeAt(e.X, e.Y);
         }
     }
 }

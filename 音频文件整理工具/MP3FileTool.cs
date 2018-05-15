@@ -79,10 +79,10 @@ namespace 音频文件整理工具
             return fileInfos.FindAll(f => f.Performer == performer).ToArray();
         }
 
-        internal MP3FolderInfo[] FolderByAlbum()
+        internal MP3FolderInfo[] FolderByAlbum(MP3FileInfo[] files)
         {
             List<MP3FolderInfo> result = new List<MP3FolderInfo>();
-            foreach (var item in fileInfos)
+            foreach (var item in files)
             {
                 var tmp = result.Find(f => f.Name == item.Album);
                 if (tmp == null)
@@ -100,10 +100,10 @@ namespace 音频文件整理工具
             return result.ToArray();
         }
 
-        internal MP3FolderInfo[] FolderByPerformer()
+        internal MP3FolderInfo[] FolderByPerformer(MP3FileInfo[] files)
         {
             List<MP3FolderInfo> result = new List<MP3FolderInfo>();
-            foreach (var item in fileInfos)
+            foreach (var item in files)
             {
                 var tmp = result.Find(f => f.Name == item.Performer);
                 if (tmp == null)
