@@ -326,5 +326,25 @@ namespace 音频文件整理工具
                 }
             }
         }
+
+        private void 导出所有歌曲信息ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.DefaultExt = ".csv";
+            sfd.FileName = "Musics.csv";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("曲名,歌手,专辑,本地路径");
+                sb.Append(Environment.NewLine);
+                foreach (var item in tool.GetAllFileInfos())
+                {
+                    sb.Append(item.GetCSVLine());
+                    sb.Append(Environment.NewLine);
+                }
+                File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+            }
+
+        }
     }
 }

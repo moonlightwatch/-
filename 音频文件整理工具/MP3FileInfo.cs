@@ -87,6 +87,19 @@ namespace 音频文件整理工具
             sb.Append(string.Format("文件路径：{0}", this.FilePath));
             return sb.ToString();
         }
+
+        public string GetCSVLine()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(this.Title.Replace(",", ""));
+            sb.Append(",");
+            sb.Append(this.Performer.Replace(",", ""));
+            sb.Append(",");
+            sb.Append(this.Album.Replace(",", ""));
+            sb.Append(",");
+            sb.Append(this.FilePath.Replace(",", ""));
+            return sb.ToString();
+        }
     }
 
     internal class MP3FolderInfo
