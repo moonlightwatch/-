@@ -49,16 +49,20 @@ namespace 音频文件整理工具
         /// <returns>格式化后的名称</returns>
         public string FormatFileName(RenameFormat format)
         {
+            string result = Title;
             switch (format)
             {
                 case RenameFormat.Performer_Title:
-                    return string.Format("{0}-{1}", this.Performer, this.Title);
+                    result = string.Format("{0}-{1}.mp3", this.Performer, this.Title);
+                    break;
                 case RenameFormat.Title_Performer:
-                    return string.Format("{0}-{1}", this.Title, this.Performer);
+                    result = string.Format("{0}-{1}.mp3", this.Title, this.Performer);
+                    break;
                 case RenameFormat.Title:
-                    return this.Title;
+                    result = string.Format("{0}.mp3", this.Title);
+                    break;
             }
-            return Title;
+            return result.Replace("\\", "").Replace("/", "");
         }
 
         public string DetailsString()

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -240,6 +241,90 @@ namespace 音频文件整理工具
         private void treeView1_MouseClick(object sender, MouseEventArgs e)
         {
             treeView1.SelectedNode = treeView1.GetNodeAt(e.X, e.Y);
+            if (e.Button == MouseButtons.Right && treeView1.SelectedNode.Tag is MP3FileInfo)
+            {
+                ContextMenuStrip cms = new ContextMenuStrip();
+                cms.Items.Add("播放", null, (object obj, EventArgs ee) =>
+                {
+                    Process.Start((treeView1.SelectedNode.Tag as MP3FileInfo).FilePath);
+                });
+
+                cms.Show(treeView1.PointToScreen(new Point(e.X, e.Y)));
+            }
+        }
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && pictureBox1.Image != null)
+            {
+                ContextMenuStrip cms = new ContextMenuStrip();
+                cms.Items.Add("封面另存为", null, (object obj, EventArgs ee) =>
+                {
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    sfd.FileName = (treeView1.SelectedNode.Tag as MP3FileInfo).Title + ".jpg";
+                    sfd.Filter = "图片|*.jpg";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        pictureBox1.Image.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+                });
+
+                cms.Show(pictureBox1.PointToScreen(new Point(e.X, e.Y)));
+            }
+        }
+
+        private void 另存为AToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fBrowser = new FolderBrowserDialog();
+            if (fBrowser.ShowDialog() == DialogResult.OK)
+            {
+                List<string> folders = new List<string>();
+                Dictionary<string, string> fileCopy_dic = new Dictionary<string, string>();
+                foreach (TreeNode tn in treeView1.Nodes)
+                {
+                    if (tn.Tag is MP3FileInfo)
+                    {
+                        var file = tn.Tag as MP3FileInfo;
+                        fileCopy_dic[file.FilePath] = Path.Combine(fBrowser.SelectedPath, file.FileName);
+                    }
+                    else
+                    {
+                        var newFolder = Path.Combine(fBrowser.SelectedPath, tn.Text);
+                        if (!Directory.Exists(newFolder))
+                        {
+                            folders.Add(newFolder);
+                        }
+                        foreach (TreeNode ctn in tn.Nodes)
+                        {
+                            if (ctn.Tag is MP3FileInfo)
+                            {
+                                var file = ctn.Tag as MP3FileInfo;
+                                fileCopy_dic[file.FilePath] = Path.Combine(newFolder, file.FileName);
+                            }
+                        }
+                    }
+                }
+                var result = MessageBox.Show("确定将预览内容另存到：" + fBrowser.SelectedPath, "保存确认", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    foreach (var item in folders)
+                    {
+                        Directory.CreateDirectory(item);
+                    }
+
+                    foreach (var key in fileCopy_dic.Keys)
+                    {
+                        try
+                        {
+                            File.Copy(key, fileCopy_dic[key], true);
+                        }
+                        catch (Exception exc)
+                        { }
+                    }
+
+                    MessageBox.Show("完成");
+                }
+            }
         }
     }
 }
