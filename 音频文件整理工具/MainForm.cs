@@ -346,5 +346,15 @@ namespace 音频文件整理工具
             }
 
         }
+
+        private void treeView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            treeView1.SelectedNode = treeView1.GetNodeAt(e.X, e.Y);
+            if (treeView1.SelectedNode.Tag is MP3FileInfo)
+            {
+                Process.Start((treeView1.SelectedNode.Tag as MP3FileInfo).FilePath);
+
+            }
+        }
     }
 }
