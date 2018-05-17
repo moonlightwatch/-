@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace 音频文件整理工具
 {
@@ -13,6 +14,8 @@ namespace 音频文件整理工具
         public event MP3LoadOneEventHandler OnLoadOne = new MP3LoadOneEventHandler((object sender, MP3LoadOneEventArgs e) => { });
 
         public event EventHandler LoadCompleted = new EventHandler((object sender, EventArgs e) => { });
+
+        public event MP3FindOneEventHandler OnFindOne = new MP3FindOneEventHandler((object sender, MP3FindOneEventArgs e) => { });
 
         /// <summary>
         /// MP3文件信息集合
@@ -189,7 +192,79 @@ namespace 音频文件整理工具
             }
             return true;
         }
+
+        internal async Task<MP3FileInfo[]> Search(string searchText, SearchType searchType)
+        {
+            Task<MP3FileInfo[]> task = new Task<MP3FileInfo[]>((object obj) =>
+            {
+                var text = (obj as object[])[0].ToString();
+                var type = (SearchType)Enum.Parse(typeof(SearchType), (obj as object[])[1].ToString());
+                MP3FileInfo[] infos = (obj as object[])[2] as MP3FileInfo[];
+                if (string.IsNullOrEmpty(text))
+                {
+                    int n = 1;
+                    foreach (MP3FileInfo item in infos)
+                    {
+                        OnFindOne(this, new MP3FindOneEventArgs()
+                        {
+                            Itme = item,
+                            Count = n
+                        });
+                        n += 1;
+                    }
+                    return infos;
+                }
+                List<MP3FileInfo> result = new List<MP3FileInfo>();
+                foreach (MP3FileInfo item in infos)
+                {
+                    switch (type)
+                    {
+                        case SearchType.Album:
+                            if (item.Album.Contains(text))
+                            {
+                                result.Add(item);
+                                OnFindOne(this, new MP3FindOneEventArgs()
+                                {
+                                    Itme = item,
+                                    Count = result.Count
+                                });
+                            }
+                            break;
+                        case SearchType.Performer:
+                            if (item.Performer.Contains(text))
+                            {
+                                result.Add(item);
+                                OnFindOne(this, new MP3FindOneEventArgs()
+                                {
+                                    Itme = item,
+                                    Count = result.Count
+                                });
+                            }
+                            break;
+                        case SearchType.Title:
+                            if (item.Title.Contains(text))
+                            {
+                                result.Add(item);
+                                OnFindOne(this, new MP3FindOneEventArgs()
+                                {
+                                    Itme = item,
+                                    Count = result.Count
+                                });
+                            }
+                            break;
+                    }
+                }
+                return result.ToArray();
+            }, new object[] { searchText, searchType, this.fileInfos.ToArray() });
+            task.Start();
+            return await task;
+        }
     }
 
-
+    internal enum SearchType
+    {
+        Title,
+        Performer,
+        Album
+    }
 }

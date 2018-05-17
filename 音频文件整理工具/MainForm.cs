@@ -17,11 +17,13 @@ namespace 音频文件整理工具
 
     internal delegate void ShowDataToViewHandler(MP3FileInfo[] data);
 
+    internal delegate void FindOneHandler(MP3FileInfo data, int count);
+
     public partial class MainForm : Form
     {
         private ShowMessageHandler showMessageHandler = null;
         private ShowDataToViewHandler showDataToViewHandler = null;
-
+        private FindOneHandler findOneHandler = null;
         private MP3FileTool tool = new MP3FileTool();
 
         private MP3FileInfo[] showingData = new MP3FileInfo[] { };
@@ -38,8 +40,23 @@ namespace 音频文件整理工具
             {
                 ShowDataToView(data);
             });
+            findOneHandler = new FindOneHandler((MP3FileInfo data, int count) =>
+            {
+                if (data != null)
+                {
+                    AddDataToView(data);
+                    this.msgLabel.Text = string.Format("找到 {0} 个", count);
+                }
+            });
+            tool.OnFindOne += Tool_OnFindOne;
             tool.OnLoadOne += Tool_OnLoadOne;
             tool.LoadCompleted += Tool_LoadCompleted;
+
+        }
+
+        private void Tool_OnFindOne(object sender, MP3FindOneEventArgs e)
+        {
+            this.Invoke(findOneHandler, new object[] { e.Itme, e.Count });
         }
 
         private void Tool_LoadCompleted(object sender, EventArgs e)
@@ -75,6 +92,26 @@ namespace 音频文件整理工具
                     StateImageKey = item.FilePath
                 });
             }
+        }
+
+        private void AddDataToView(MP3FileInfo item)
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            if (item.Picture != null)
+            {
+                this.treeView1.ImageList.Images.Add(item.FilePath, item.Picture);
+            }
+            else
+            {
+                this.treeView1.ImageList.Images.Add(item.FilePath, ((System.Drawing.Icon)(resources.GetObject("$this.Icon"))));
+            }
+            this.treeView1.Nodes.Add(new TreeNode(item.FileName)
+            {
+                Tag = item,
+                ImageKey = item.FilePath,
+                SelectedImageKey = item.FilePath,
+                StateImageKey = item.FilePath
+            });
         }
 
         private void ShowDataToView(MP3FolderInfo[] folders)
@@ -221,42 +258,35 @@ namespace 音频文件整理工具
 
         private void textBox_searchbox_TextChanged(object sender, EventArgs e)
         {
-            RunSearch(tool.GetAllFileInfos(), textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
+            RunSearchAsync(textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
         }
 
         private void comboBox_searchType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RunSearch(tool.GetAllFileInfos(), textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
+            if (!string.IsNullOrEmpty(textBox_searchbox.Text))
+            {
+                RunSearchAsync(textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
+            }
         }
 
-        private async Task RunSearch(MP3FileInfo[] data, string searchText, string searchType)
+        private async Task RunSearchAsync(string searchText, string searchType)
         {
-            Task task = new Task((object taskData) =>
+            this.treeView1.Nodes.Clear();
+            this.treeView1.ImageList.Images.Clear();
+            if (searchType == "搜曲名")
             {
-                var sourceData = (taskData as object[])[0] as MP3FileInfo[];
-                var text = (taskData as object[])[1] as string;
-                var type = (taskData as object[])[2] as string;
-                MP3FileInfo[] tmpData = null;
-                if (type == "搜曲名")
-                {
-                    tmpData = sourceData.Where(f => f.Title.Contains(text)).ToArray();
-                }
-                if (type == "搜歌手")
-                {
-                    tmpData = sourceData.Where(f => f.Performer.Contains(text)).ToArray();
-                }
-                if (type == "搜专辑")
-                {
-                    tmpData = sourceData.Where(f => f.Album.Contains(text)).ToArray();
-                }
-                //ShowDataToView(showingData);
-                if (tmpData != null)
-                {
-                    this.Invoke(showDataToViewHandler, new object[] { tmpData });
-                    ShowMessage(string.Format("搜索到 {0} 个结果", tmpData.Length));
-                }
-            }, new object[] { data, searchText, searchType });
-            task.Start();
+                await tool.Search(searchText, SearchType.Title);
+                //     tmpData = sourceData.Where(f => f.Title.Contains(text)).ToArray();
+            }
+            if (searchType == "搜歌手")
+            {
+                await tool.Search(searchText, SearchType.Performer);
+            }
+            if (searchType == "搜专辑")
+            {
+                await tool.Search(searchText, SearchType.Album);
+            }
+
             label_view.Text = "文件预览";
         }
 

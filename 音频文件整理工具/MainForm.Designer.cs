@@ -49,6 +49,7 @@
             this.帮助HToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.msgLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -63,7 +64,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.textBox_info = new System.Windows.Forms.TextBox();
-            this.msgLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -239,6 +239,12 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // msgLabel
+            // 
+            this.msgLabel.Name = "msgLabel";
+            this.msgLabel.Size = new System.Drawing.Size(32, 17);
+            this.msgLabel.Text = "就绪";
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -277,6 +283,7 @@
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.FullRowSelect = true;
             this.treeView1.Location = new System.Drawing.Point(4, 63);
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(253, 327);
@@ -416,12 +423,6 @@
             this.textBox_info.TabIndex = 3;
             this.textBox_info.WordWrap = false;
             this.textBox_info.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // msgLabel
-            // 
-            this.msgLabel.Name = "msgLabel";
-            this.msgLabel.Size = new System.Drawing.Size(32, 17);
-            this.msgLabel.Text = "就绪";
             // 
             // MainForm
             // 

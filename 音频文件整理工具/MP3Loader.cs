@@ -64,6 +64,7 @@ namespace 音频文件整理工具
                 {
                     mp3Info.Performer = "未知";
                 }
+                
                 return mp3Info;
             }, filepath);
             task.Start();

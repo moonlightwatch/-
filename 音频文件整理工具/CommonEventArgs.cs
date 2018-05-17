@@ -14,4 +14,12 @@ namespace 音频文件整理工具
         public int Index { get; set; }
         public int Total { get; set; }
     }
+
+    public delegate void MP3FindOneEventHandler(object sender, MP3FindOneEventArgs e);
+
+    public class MP3FindOneEventArgs : EventArgs
+    {
+        public MP3FileInfo Itme { get; set; }
+        public int Count { get; set; }
+    }
 }
