@@ -8,13 +8,20 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace 音频文件整理工具
 {
+    internal delegate void ShowMessageHandler(string msg);
+
+    internal delegate void ShowDataToViewHandler(MP3FileInfo[] data);
 
     public partial class MainForm : Form
     {
+        private ShowMessageHandler showMessageHandler = null;
+        private ShowDataToViewHandler showDataToViewHandler = null;
+
         private MP3FileTool tool = new MP3FileTool();
 
         private MP3FileInfo[] showingData = new MP3FileInfo[] { };
@@ -23,6 +30,26 @@ namespace 音频文件整理工具
         {
             InitializeComponent();
             this.treeView1.ImageList = new ImageList() { ImageSize = new Size(16, 16) };
+            showMessageHandler = new ShowMessageHandler((string msg) =>
+            {
+                this.msgLabel.Text = msg;
+            });
+            showDataToViewHandler = new ShowDataToViewHandler((MP3FileInfo[] data) =>
+            {
+                ShowDataToView(data);
+            });
+            tool.OnLoadOne += Tool_OnLoadOne;
+            tool.LoadCompleted += Tool_LoadCompleted;
+        }
+
+        private void Tool_LoadCompleted(object sender, EventArgs e)
+        {
+            this.Invoke(showDataToViewHandler, new object[] { tool.GetAllFileInfos() });
+        }
+
+        private void Tool_OnLoadOne(object sender, MP3LoadOneEventArgs e)
+        {
+            ShowMessage(string.Format("{0}/{1} {2}", e.Index, e.Total, e.Itme.Title));
         }
 
         private void ShowDataToView(MP3FileInfo[] fileInfos)
@@ -80,6 +107,11 @@ namespace 音频文件整理工具
             this.treeView1.ExpandAll();
         }
 
+        private void ShowMessage(string msg)
+        {
+            this.Invoke(showMessageHandler, new object[] { msg });
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             this.comboBox_searchType.SelectedIndex = 0;
@@ -105,9 +137,7 @@ namespace 音频文件整理工具
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
             if (folderBrowser.ShowDialog() == DialogResult.OK)
             {
-                tool.LoadFromFolder(folderBrowser.SelectedPath, true);
-                showingData = tool.GetAllFileInfos();
-                ShowDataToView(showingData);
+                var task = tool.LoadFromFolderAsync(folderBrowser.SelectedPath, true);
             }
         }
 
@@ -191,31 +221,42 @@ namespace 音频文件整理工具
 
         private void textBox_searchbox_TextChanged(object sender, EventArgs e)
         {
-            RunSearch();
+            RunSearch(tool.GetAllFileInfos(), textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
         }
 
         private void comboBox_searchType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RunSearch();
+            RunSearch(tool.GetAllFileInfos(), textBox_searchbox.Text, comboBox_searchType.SelectedItem.ToString());
         }
 
-        private void RunSearch()
+        private async Task RunSearch(MP3FileInfo[] data, string searchText, string searchType)
         {
-            var files = tool.GetAllFileInfos();
-            var text = textBox_searchbox.Text;
-            if (comboBox_searchType.SelectedItem.ToString() == "搜曲名")
+            Task task = new Task((object taskData) =>
             {
-                showingData = files.Where(f => f.Title.Contains(text)).ToArray();
-            }
-            if (comboBox_searchType.SelectedItem.ToString() == "搜歌手")
-            {
-                showingData = files.Where(f => f.Performer.Contains(text)).ToArray();
-            }
-            if (comboBox_searchType.SelectedItem.ToString() == "搜专辑")
-            {
-                showingData = files.Where(f => f.Album.Contains(text)).ToArray();
-            }
-            ShowDataToView(showingData);
+                var sourceData = (taskData as object[])[0] as MP3FileInfo[];
+                var text = (taskData as object[])[1] as string;
+                var type = (taskData as object[])[2] as string;
+                MP3FileInfo[] tmpData = null;
+                if (type == "搜曲名")
+                {
+                    tmpData = sourceData.Where(f => f.Title.Contains(text)).ToArray();
+                }
+                if (type == "搜歌手")
+                {
+                    tmpData = sourceData.Where(f => f.Performer.Contains(text)).ToArray();
+                }
+                if (type == "搜专辑")
+                {
+                    tmpData = sourceData.Where(f => f.Album.Contains(text)).ToArray();
+                }
+                //ShowDataToView(showingData);
+                if (tmpData != null)
+                {
+                    this.Invoke(showDataToViewHandler, new object[] { tmpData });
+                    ShowMessage(string.Format("搜索到 {0} 个结果", tmpData.Length));
+                }
+            }, new object[] { data, searchText, searchType });
+            task.Start();
             label_view.Text = "文件预览";
         }
 

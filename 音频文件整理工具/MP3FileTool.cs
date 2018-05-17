@@ -10,12 +10,16 @@ namespace 音频文件整理工具
 {
     internal class MP3FileTool
     {
+        public event MP3LoadOneEventHandler OnLoadOne = new MP3LoadOneEventHandler((object sender, MP3LoadOneEventArgs e) => { });
+
+        public event EventHandler LoadCompleted = new EventHandler((object sender, EventArgs e) => { });
+
         /// <summary>
         /// MP3文件信息集合
         /// </summary>
         private List<MP3FileInfo> fileInfos = new List<MP3FileInfo>();
 
-        internal void LoadFromFolder(string path, bool reopen)
+        internal async System.Threading.Tasks.Task LoadFromFolderAsync(string path, bool reopen)
         {
             if (!Directory.Exists(path))
             {
@@ -29,15 +33,22 @@ namespace 音频文件整理工具
             var files = Directory.GetFiles(path, "*.mp3", SearchOption.AllDirectories);
             foreach (var item in files)
             {
-                var tmp = loader.LoadFromFile(item);
+                var tmp = await loader.LoadFromFile(item);
                 if (tmp != null)
                 {
+                    OnLoadOne(this, new MP3LoadOneEventArgs()
+                    {
+                        Itme = tmp,
+                        Index = fileInfos.Count + 1,
+                        Total = files.Length
+                    });
                     fileInfos.Add(tmp);
                 }
             }
+            LoadCompleted(this, new EventArgs());
         }
 
-        internal void LoadFromFile(string path, bool reopen)
+        internal async System.Threading.Tasks.Task LoadFromFileAsync(string path, bool reopen)
         {
             if (!File.Exists(path))
             {
@@ -48,11 +59,18 @@ namespace 音频文件整理工具
                 fileInfos.Clear();
             }
             MP3Loader loader = new MP3Loader();
-            var tmp = loader.LoadFromFile(path);
+            var tmp = await loader.LoadFromFile(path);
             if (tmp != null)
             {
+                OnLoadOne(this, new MP3LoadOneEventArgs()
+                {
+                    Itme = tmp,
+                    Index = 1,
+                    Total = 1
+                });
                 fileInfos.Add(tmp);
             }
+            LoadCompleted(this, new EventArgs());
         }
 
         internal MP3FileInfo[] GetAllFileInfos()

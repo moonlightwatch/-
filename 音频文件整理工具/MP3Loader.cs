@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace 音频文件整理工具
 {
@@ -16,51 +17,57 @@ namespace 音频文件整理工具
         /// </summary>
         /// <param name="filepath">文件路径</param>
         /// <returns>MP3FileInfo对象</returns>
-        internal MP3FileInfo LoadFromFile(string filepath)
+        internal async Task<MP3FileInfo> LoadFromFile(string filepath)
         {
             if (!File.Exists(filepath) || !filepath.ToLower().EndsWith(".mp3"))
             {
                 return null;
             }
-            var bytes = File.ReadAllBytes(filepath);
-            MP3FileInfo mp3Info = new MP3FileInfo();
-            mp3Info.FileName = Path.GetFileName(filepath);
-            mp3Info.FilePath = Path.GetFullPath(filepath);
-            mp3Info.HaveID3 = checkID3(bytes);
-            if (mp3Info.HaveID3)
+            Task<MP3FileInfo> task = new Task<MP3FileInfo>((object fpObj) =>
             {
-                var tags = readFrames(bytes);
-                foreach (var key in tags.Keys)
+                var fp = fpObj.ToString();
+                var bytes = File.ReadAllBytes(fp);
+                MP3FileInfo mp3Info = new MP3FileInfo();
+                mp3Info.FileName = Path.GetFileName(fp);
+                mp3Info.FilePath = Path.GetFullPath(fp);
+                mp3Info.HaveID3 = checkID3(bytes);
+                if (mp3Info.HaveID3)
                 {
-                    switch (key)
+                    var tags = readFrames(bytes);
+                    foreach (var key in tags.Keys)
                     {
-                        case "TIT2":
-                            mp3Info.Title = readFrameContent(tags[key]);
-                            break;
-                        case "TPE1":
-                            mp3Info.Performer = readFrameContent(tags[key]);
-                            break;
-                        case "TALB":
-                            mp3Info.Album = readFrameContent(tags[key]);
-                            break;
-                        case "TYER":
-                            mp3Info.Year = readFrameContent(tags[key]);
-                            break;
-                        case "APIC":
-                            mp3Info.Picture = readImage(tags[key]);
-                            break;
+                        switch (key)
+                        {
+                            case "TIT2":
+                                mp3Info.Title = readFrameContent(tags[key]);
+                                break;
+                            case "TPE1":
+                                mp3Info.Performer = readFrameContent(tags[key]);
+                                break;
+                            case "TALB":
+                                mp3Info.Album = readFrameContent(tags[key]);
+                                break;
+                            case "TYER":
+                                mp3Info.Year = readFrameContent(tags[key]);
+                                break;
+                            case "APIC":
+                                mp3Info.Picture = readImage(tags[key]);
+                                break;
+                        }
                     }
                 }
-            }
-            if (string.IsNullOrEmpty(mp3Info.Album))
-            {
-                mp3Info.Album = "未知";
-            }
-            if (string.IsNullOrEmpty(mp3Info.Performer))
-            {
-                mp3Info.Performer = "未知";
-            }
-            return mp3Info;
+                if (string.IsNullOrEmpty(mp3Info.Album))
+                {
+                    mp3Info.Album = "未知";
+                }
+                if (string.IsNullOrEmpty(mp3Info.Performer))
+                {
+                    mp3Info.Performer = "未知";
+                }
+                return mp3Info;
+            }, filepath);
+            task.Start();
+            return await task;
         }
         /// <summary>
         /// 检查ID3头
